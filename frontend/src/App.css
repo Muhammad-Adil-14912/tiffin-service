@@ -1,0 +1,559 @@
+/* App.css - Premium Tiffin Service Design System */
+
+:root {
+  --primary: #f97316;       /* Sunset Orange */
+  --primary-hover: #ea580c;
+  --secondary: #fbbf24;     /* Warm Amber */
+  --success: #10b981;       /* Fresh Emerald */
+  --danger: #ef4444;        /* Spicy Crimson */
+  --dark-bg: #0b0f19;       /* Deep Midnight */
+  --dark-card: rgba(22, 28, 45, 0.7); /* Glass Slate */
+  --dark-border: rgba(255, 255, 255, 0.08);
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --font-heading: 'Outfit', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --shadow-glow: 0 0 25px rgba(249, 115, 22, 0.2);
+  --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 24px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--dark-bg);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(249, 115, 22, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(251, 191, 36, 0.04) 0%, transparent 45%);
+  background-attachment: fixed;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--dark-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* Common Layout Containers */
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  padding: 2rem 5% 5rem 5%;
+  max-width: 1440px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Glassmorphic Card */
+.glass-card {
+  background: var(--dark-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--dark-border);
+  border-radius: var(--radius-md);
+  padding: 2rem;
+  box-shadow: var(--shadow-card);
+  transition: var(--transition);
+}
+
+.glass-card:hover {
+  border-color: rgba(249, 115, 22, 0.2);
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.6rem;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary) 0%, #ea580c 100%);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(249, 115, 22, 0.45);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--dark-border);
+  color: var(--text-primary);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-2px);
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: white;
+}
+.btn-danger:hover {
+  background: #dc2626;
+  transform: translateY(-2px);
+}
+
+/* Input Fields */
+.form-group {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+.form-control {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--dark-border);
+  border-radius: var(--radius-sm);
+  padding: 0.9rem 1.2rem;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  transition: var(--transition);
+  width: 100%;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+  background: rgba(15, 23, 42, 0.8);
+}
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-veg {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--success);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.badge-nonveg {
+  background: rgba(239, 68, 68, 0.15);
+  color: var(--danger);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.badge-diet {
+  background: rgba(59, 130, 246, 0.15);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+/* Auth Screens */
+.auth-wrapper {
+  max-width: 480px;
+  margin: 4rem auto;
+  width: 100%;
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.auth-header h2 {
+  font-size: 2.2rem;
+  background: linear-gradient(135deg, #fff 30%, var(--secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.auth-header p {
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+}
+
+.role-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.role-btn {
+  padding: 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--dark-border);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text-secondary);
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+}
+
+.role-btn.active {
+  background: rgba(249, 115, 22, 0.1);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* Home / Tiffin Grid page */
+.home-hero {
+  text-align: center;
+  padding: 3rem 0;
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.home-hero h1 {
+  font-size: 3.5rem;
+  background: linear-gradient(135deg, #fff 40%, var(--primary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+}
+
+.home-hero p {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.filters-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.category-tabs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tab-btn {
+  padding: 0.5rem 1.2rem;
+  border-radius: 999px;
+  border: 1px solid var(--dark-border);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: var(--transition);
+  font-weight: 500;
+}
+
+.tab-btn.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.tiffin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+}
+
+.tiffin-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.tiffin-img-placeholder {
+  height: 180px;
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--dark-border);
+}
+
+.tiffin-img-placeholder::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.4));
+}
+
+.tiffin-card h3 {
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.tiffin-desc {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+  flex: 1;
+}
+
+.tiffin-price-tag {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-top: 1px solid var(--dark-border);
+  padding-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.price-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.price-amount {
+  font-size: 1.5rem;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  color: var(--primary);
+}
+
+/* Detail page */
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 3rem;
+  margin-top: 2rem;
+}
+
+@media (max-width: 768px) {
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.weekly-menu-card {
+  margin-top: 2rem;
+}
+
+.menu-day-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.8rem 0;
+  border-bottom: 1px solid var(--dark-border);
+}
+
+.menu-day-row:last-child {
+  border-bottom: none;
+}
+
+.day-name {
+  font-weight: 600;
+  color: var(--text-primary);
+  width: 100px;
+}
+
+.day-meal {
+  color: var(--text-secondary);
+  text-align: right;
+  flex: 1;
+}
+
+.pricing-selector {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin: 1.5rem 0;
+}
+
+.price-select-btn {
+  padding: 1rem 0.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--dark-border);
+  background: rgba(255, 255, 255, 0.01);
+  cursor: pointer;
+  text-align: center;
+  transition: var(--transition);
+}
+
+.price-select-btn.active {
+  border-color: var(--primary);
+  background: rgba(249, 115, 22, 0.05);
+}
+
+.price-select-btn h4 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 0.25rem;
+}
+
+.price-select-btn span {
+  font-size: 1.2rem;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.price-select-btn.active span {
+  color: var(--primary);
+}
+
+/* Dashboard Analytics */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.analytic-card {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.analytic-icon {
+  background: rgba(249, 115, 22, 0.1);
+  color: var(--primary);
+  padding: 1rem;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.analytic-info h3 {
+  font-size: 1.8rem;
+  line-height: 1.2;
+}
+
+.analytic-info p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Table styling for dashboards */
+.orders-table-wrapper {
+  overflow-x: auto;
+  margin-top: 1.5rem;
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.orders-table th {
+  padding: 1rem;
+  border-bottom: 2px solid var(--dark-border);
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+}
+
+.orders-table td {
+  padding: 1.2rem 1rem;
+  border-bottom: 1px solid var(--dark-border);
+  font-size: 0.95rem;
+}
+
+.orders-table tr:hover {
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-pending { background: rgba(251, 191, 36, 0.1); color: var(--secondary); }
+.status-cooking { background: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+.status-dispatched { background: rgba(167, 139, 250, 0.1); color: #a78bfa; }
+.status-delivered { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+.status-cancelled { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+
+/* Vendor Meal form modal or inline */
+.meal-form-card {
+  margin-bottom: 3rem;
+}
+
+.menu-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 576px) {
+  .menu-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
