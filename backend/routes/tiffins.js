@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const router = express.Router();
 const Tiffin = require('../models/Tiffin');
 const { protect, vendorOnly } = require('../middleware/auth');
@@ -32,13 +33,17 @@ router.get('/vendor', protect, vendorOnly, async (req, res) => {
 // @access  Public
 router.get('/:id', async (req, res) => {
   try {
-    const tiffin = await Tiffin.findById(req.params.id).populate('vendor', 'name email phone');
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ success: false, message: 'Invalid tiffin plan ID' });
+    }
+    const tiffin = await Tiffin.findOne({ _id: req.params.id, available: true })
+      .populate('vendor', 'name email phone');
     if (!tiffin) {
       return res.status(404).json({ success: false, message: 'Tiffin plan not found' });
     }
     res.json({ success: true, data: tiffin });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: 'Unable to load tiffin plan' });
   }
 });
 
@@ -49,8 +54,21 @@ router.post('/', protect, vendorOnly, async (req, res) => {
   try {
     const { title, description, price, category, menu, image } = req.body;
 
-    if (!title || !description || !price || !price.daily || !price.weekly || !price.monthly || !category) {
-      return res.status(400).json({ success: false, message: 'Please add all required fields' });
+    const validText = (value, min, max) =>
+      typeof value === 'string' && value.trim().length >= min && value.trim().length <= max;
+    const validPrice = (value) => Number.isFinite(value) && value > 0 && value <= 1000000;
+
+    if (
+      !validText(title, 3, 100) ||
+      !validText(description, 10, 2000) ||
+      !price || typeof price !== 'object' ||
+      !validPrice(price.daily) ||
+      !validPrice(price.weekly) ||
+      !validPrice(price.monthly) ||
+      !['Veg', 'Non-Veg', 'Diet'].includes(category) ||
+      (image !== undefined && (typeof image !== 'string' || image.length > 2048))
+    ) {
+      return res.status(400).json({ success: false, message: 'Please provide valid tiffin listing details and positive plan prices' });
     }
 
     const tiffin = await Tiffin.create({
@@ -74,6 +92,9 @@ router.post('/', protect, vendorOnly, async (req, res) => {
 // @access  Private/Vendor
 router.put('/:id', protect, vendorOnly, async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ success: false, message: 'Invalid tiffin plan ID' });
+    }
     let tiffin = await Tiffin.findById(req.params.id);
 
     if (!tiffin) {
@@ -115,6 +136,9 @@ router.put('/:id', protect, vendorOnly, async (req, res) => {
 // @access  Private/Vendor
 router.delete('/:id', protect, vendorOnly, async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ success: false, message: 'Invalid tiffin plan ID' });
+    }
     const tiffin = await Tiffin.findById(req.params.id);
 
     if (!tiffin) {
