@@ -42,6 +42,13 @@ const vendorOnly = (req, res, next) => {
 };
 
 // Administrators are configured out-of-band; public signup can never grant admin access.
+const customerOnly = (req, res, next) => {
+  if (!req.user || req.user.role !== 'customer') {
+    return res.status(403).json({ success: false, message: 'Customer account required' });
+  }
+  return next();
+};
+
 const adminOnly = (req, res, next) => {
   const adminEmails = (process.env.ADMIN_EMAILS || '')
     .split(',')
@@ -55,4 +62,4 @@ const adminOnly = (req, res, next) => {
   return next();
 };
 
-module.exports = { protect, vendorOnly, adminOnly };
+module.exports = { protect, vendorOnly, customerOnly, adminOnly };
