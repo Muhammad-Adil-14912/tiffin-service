@@ -2,12 +2,12 @@ const express = require('express');
 const router = express.Router();
 const Order = require('../models/Order');
 const Tiffin = require('../models/Tiffin');
-const { protect, vendorOnly } = require('../middleware/auth');
+const { protect, vendorOnly, customerOnly } = require('../middleware/auth');
 
 // @route   POST /api/orders
 // @desc    Create new order/subscription
 // @access  Private (Customer only)
-router.post('/', protect, async (req, res) => {
+router.post('/', protect, customerOnly, async (req, res) => {
   try {
     const { tiffinId, planType, startDate, deliveryAddress, deliveryTime } = req.body;
 
