@@ -8,7 +8,10 @@ const { protect, adminOnly } = require('../middleware/auth');
 // @access Admin (ADMIN_EMAILS allowlist)
 router.get('/vendors/pending', protect, adminOnly, async (req, res) => {
   try {
-    const vendors = await User.find({ role: 'vendor', vendorStatus: 'pending' })
+    const vendors = await User.find({
+      role: 'vendor',
+      $or: [{ vendorStatus: 'pending' }, { vendorStatus: { $exists: false } }],
+    })
       .select('name email phone address createdAt vendorStatus')
       .sort({ createdAt: 1 });
     return res.json({ success: true, count: vendors.length, data: vendors });
@@ -28,7 +31,11 @@ router.patch('/vendors/:id/status', protect, adminOnly, async (req, res) => {
     }
 
     const vendor = await User.findOneAndUpdate(
-      { _id: req.params.id, role: 'vendor', vendorStatus: 'pending' },
+      {
+        _id: req.params.id,
+        role: 'vendor',
+        $or: [{ vendorStatus: 'pending' }, { vendorStatus: { $exists: false } }],
+      },
       { $set: { vendorStatus: status } },
       { new: true, runValidators: true }
     ).select('name email vendorStatus');
