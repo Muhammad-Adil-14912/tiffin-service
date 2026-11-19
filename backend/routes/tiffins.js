@@ -85,7 +85,21 @@ router.put('/:id', protect, vendorOnly, async (req, res) => {
       return res.status(401).json({ success: false, message: 'Not authorized to update this plan' });
     }
 
-    tiffin = await Tiffin.findByIdAndUpdate(req.params.id, req.body, {
+    // Only accept editable listing fields; never allow clients to transfer ownership
+    // or overwrite internal fields such as vendor and createdAt.
+    const allowedFields = ['title', 'description', 'price', 'category', 'menu', 'image', 'available'];
+    const updates = {};
+    for (const field of allowedFields) {
+      if (Object.prototype.hasOwnProperty.call(req.body || {}, field)) {
+        updates[field] = req.body[field];
+      }
+    }
+
+    if (Object.keys(updates).length === 0) {
+      return res.status(400).json({ success: false, message: 'No valid listing fields provided' });
+    }
+
+    tiffin = await Tiffin.findByIdAndUpdate(req.params.id, { $set: updates }, {
       new: true,
       runValidators: true,
     });
