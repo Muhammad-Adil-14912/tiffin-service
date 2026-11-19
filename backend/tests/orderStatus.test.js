@@ -21,3 +21,10 @@ test('rejects skipped, repeated, and unknown transitions', () => {
   assert.equal(canTransitionOrderStatus('Pending', 'Pending'), false);
   assert.equal(canTransitionOrderStatus('Unknown', 'Cooking'), false);
 });
+
+test('terminal states cannot be reopened or changed', () => {
+  for (const nextStatus of ['Pending', 'Cooking', 'Dispatched', 'Delivered', 'Cancelled']) {
+    assert.equal(canTransitionOrderStatus('Delivered', nextStatus), false);
+    assert.equal(canTransitionOrderStatus('Cancelled', nextStatus), false);
+  }
+});
