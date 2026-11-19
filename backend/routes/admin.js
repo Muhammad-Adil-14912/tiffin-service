@@ -5,7 +5,7 @@ const { protect, adminOnly } = require('../middleware/auth');
 
 // @route GET /api/admin/vendors/pending
 // @desc List vendor applications awaiting review
-// @access Admin (ADMIN_EMAILS allowlist)
+// @access Admin (ADMIN_USER_IDS allowlist)
 router.get('/vendors/pending', protect, adminOnly, async (req, res) => {
   try {
     const vendors = await User.find({
@@ -22,7 +22,7 @@ router.get('/vendors/pending', protect, adminOnly, async (req, res) => {
 
 // @route PATCH /api/admin/vendors/:id/status
 // @desc Approve or reject a vendor application
-// @access Admin (ADMIN_EMAILS allowlist)
+// @access Admin (ADMIN_USER_IDS allowlist)
 router.patch('/vendors/:id/status', protect, adminOnly, async (req, res) => {
   try {
     const { status } = req.body || {};
