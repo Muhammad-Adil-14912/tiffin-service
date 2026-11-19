@@ -50,12 +50,13 @@ const customerOnly = (req, res, next) => {
 };
 
 const adminOnly = (req, res, next) => {
-  const adminEmails = (process.env.ADMIN_EMAILS || '')
+  const adminUserIds = (process.env.ADMIN_USER_IDS || '')
     .split(',')
-    .map((email) => email.trim().toLowerCase())
+    .map((id) => id.trim())
     .filter(Boolean);
 
-  if (!req.user || !adminEmails.includes(req.user.email.toLowerCase())) {
+  // Use configured database IDs, not unverified email addresses.
+  if (!req.user || !adminUserIds.includes(String(req.user._id))) {
     return res.status(403).json({ success: false, message: 'Administrator access required' });
   }
 
