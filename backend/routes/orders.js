@@ -9,15 +9,24 @@ const { protect, vendorOnly } = require('../middleware/auth');
 // @access  Private (Customer only)
 router.post('/', protect, async (req, res) => {
   try {
-    const { tiffinId, planType, price, startDate, deliveryAddress, deliveryTime } = req.body;
+    const { tiffinId, planType, startDate, deliveryAddress, deliveryTime } = req.body;
 
-    if (!tiffinId || !planType || !price || !startDate || !deliveryAddress || !deliveryTime) {
+    if (!tiffinId || !['daily', 'weekly', 'monthly'].includes(planType) || !startDate || !deliveryAddress || !deliveryTime) {
       return res.status(400).json({ success: false, message: 'Please add all required fields' });
     }
 
     const tiffin = await Tiffin.findById(tiffinId);
     if (!tiffin) {
       return res.status(404).json({ success: false, message: 'Tiffin plan not found' });
+    }
+
+    if (!tiffin.available) {
+      return res.status(409).json({ success: false, message: 'This tiffin plan is currently unavailable' });
+    }
+
+    const price = tiffin.price?.[planType];
+    if (!Number.isFinite(price) || price <= 0) {
+      return res.status(400).json({ success: false, message: 'The selected plan does not have a valid price' });
     }
 
     const order = await Order.create({
