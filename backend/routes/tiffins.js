@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const router = express.Router();
 const Tiffin = require('../models/Tiffin');
 const { protect, vendorOnly } = require('../middleware/auth');
+const { isValidListingInput } = require('../utils/tiffinValidation');
 
 // @route   GET /api/tiffins
 // @desc    Get all tiffin plans
@@ -54,20 +55,7 @@ router.post('/', protect, vendorOnly, async (req, res) => {
   try {
     const { title, description, price, category, menu, image } = req.body;
 
-    const validText = (value, min, max) =>
-      typeof value === 'string' && value.trim().length >= min && value.trim().length <= max;
-    const validPrice = (value) => Number.isFinite(value) && value > 0 && value <= 1000000;
-
-    if (
-      !validText(title, 3, 100) ||
-      !validText(description, 10, 2000) ||
-      !price || typeof price !== 'object' ||
-      !validPrice(price.daily) ||
-      !validPrice(price.weekly) ||
-      !validPrice(price.monthly) ||
-      !['Veg', 'Non-Veg', 'Diet'].includes(category) ||
-      (image !== undefined && (typeof image !== 'string' || image.length > 2048))
-    ) {
+    if (!isValidListingInput({ title, description, price, category, image })) {
       return res.status(400).json({ success: false, message: 'Please provide valid tiffin listing details and positive plan prices' });
     }
 
