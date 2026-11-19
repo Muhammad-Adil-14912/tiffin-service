@@ -29,6 +29,7 @@ const seedData = async () => {
       email: "vendor@tiffin.com",
       password: hashedPassword,
       role: 'vendor',
+      vendorStatus: 'approved', // Explicitly approved demo vendor for local seed data.
       phone: '+1 (555) 456-7890',
       address: '42 Spice Garden Way, Foodie Town, CA 90210'
     });

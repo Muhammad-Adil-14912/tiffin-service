@@ -2,44 +2,65 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 const protect = async (req, res, next) => {
-  let token;
-
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith('Bearer')
-  ) {
-    try {
-      // Get token from header
-      token = req.headers.authorization.split(' ')[1];
-
-      // Verify token
-      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'super_secret_tiffin_key');
-
-      // Get user from the token (exclude password)
-      req.user = await User.findById(decoded.id).select('-password');
-
-      if (!req.user) {
-        return res.status(401).json({ success: false, message: 'Not authorized, user not found' });
-      }
-
-      next();
-    } catch (error) {
-      console.error(error);
-      res.status(401).json({ success: false, message: 'Not authorized, token failed' });
-    }
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ success: false, message: 'Not authorized, no token provided' });
   }
 
-  if (!token) {
-    res.status(401).json({ success: false, message: 'Not authorized, no token provided' });
+  try {
+    const token = authHeader.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = await User.findById(decoded.id).select('-password');
+
+    if (!req.user) {
+      return res.status(401).json({ success: false, message: 'Not authorized, user not found' });
+    }
+
+    return next();
+  } catch (error) {
+    return res.status(401).json({ success: false, message: 'Not authorized, token failed' });
   }
 };
 
 const vendorOnly = (req, res, next) => {
-  if (req.user && req.user.role === 'vendor') {
-    next();
-  } else {
-    res.status(403).json({ success: false, message: 'Access denied: Meal Vendors only' });
+  if (!req.user || req.user.role !== 'vendor') {
+    return res.status(403).json({ success: false, message: 'Access denied: Meal Vendors only' });
   }
+
+  if (req.user.vendorStatus !== 'approved') {
+    return res.status(403).json({
+      success: false,
+      code: 'VENDOR_APPROVAL_REQUIRED',
+      vendorStatus: req.user.vendorStatus || 'pending',
+      message: req.user.vendorStatus === 'rejected'
+        ? 'Your vendor application was not approved. Please contact support.'
+        : 'Your vendor account is pending administrator approval.',
+    });
+  }
+
+  return next();
 };
 
-module.exports = { protect, vendorOnly };
+const customerOnly = (req, res, next) => {
+  if (!req.user || req.user.role !== 'customer') {
+    return res.status(403).json({ success: false, message: 'Customer account required' });
+  }
+  return next();
+};
+
+// Administrator IDs are configured out-of-band; public signup cannot grant admin access.
+const adminOnly = (req, res, next) => {
+  const adminUserIds = (process.env.ADMIN_USER_IDS || '')
+    .split(',')
+    .map((id) => id.trim())
+    .filter(Boolean);
+
+  // Use configured database IDs, not unverified email addresses.
+  if (!req.user || !adminUserIds.includes(String(req.user._id))) {
+    return res.status(403).json({ success: false, message: 'Administrator access required' });
+  }
+
+  return next();
+};
+
+module.exports = { protect, vendorOnly, customerOnly, adminOnly };

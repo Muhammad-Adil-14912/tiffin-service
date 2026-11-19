@@ -8,6 +8,7 @@ import TiffinList from './components/TiffinList';
 import TiffinDetail from './components/TiffinDetail';
 import Dashboard from './components/Dashboard';
 import VendorDashboard from './components/VendorDashboard';
+import VendorPending from './components/VendorPending';
 
 // Create Authentication Context
 export const AuthContext = createContext();
@@ -75,8 +76,8 @@ function App() {
           <div className="main-content">
             <Routes>
               <Route path="/" element={<TiffinList />} />
-              <Route path="/login" element={!user ? <Login /> : <Navigate to={user.role === 'vendor' ? '/vendor-dashboard' : '/dashboard'} />} />
-              <Route path="/signup" element={!user ? <Signup /> : <Navigate to={user.role === 'vendor' ? '/vendor-dashboard' : '/dashboard'} />} />
+              <Route path="/login" element={!user ? <Login /> : <Navigate to={user.role === 'vendor' ? (user.vendorStatus === 'approved' ? '/vendor-dashboard' : '/vendor-pending') : '/dashboard'} />} />
+              <Route path="/signup" element={!user ? <Signup /> : <Navigate to={user.role === 'vendor' ? (user.vendorStatus === 'approved' ? '/vendor-dashboard' : '/vendor-pending') : '/dashboard'} />} />
               
               {/* Customer Dashboard */}
               <Route 
@@ -87,8 +88,10 @@ function App() {
               {/* Vendor Dashboard */}
               <Route 
                 path="/vendor-dashboard" 
-                element={user ? (user.role === 'vendor' ? <VendorDashboard /> : <Navigate to="/dashboard" />) : <Navigate to="/login" />} 
+                element={user ? (user.role === 'vendor' && user.vendorStatus === 'approved' ? <VendorDashboard /> : <Navigate to={user.role === 'vendor' ? '/vendor-pending' : '/dashboard'} />) : <Navigate to="/login" />} 
               />
+              
+              <Route path="/vendor-pending" element={user?.role === 'vendor' ? <VendorPending /> : <Navigate to="/login" />} />
               
               {/* Tiffin Detail Screen */}
               <Route path="/tiffin/:id" element={<TiffinDetail />} />
