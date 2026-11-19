@@ -48,7 +48,7 @@ function Signup() {
       if (res.data.success) {
         login(res.data, res.data.token);
         if (res.data.role === 'vendor') {
-          navigate('/vendor-dashboard');
+          navigate(res.data.vendorStatus === 'approved' ? '/vendor-dashboard' : '/vendor-pending');
         } else {
           navigate('/dashboard');
         }
