@@ -10,6 +10,8 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please add an email'],
     unique: true,
+    lowercase: true,
+    trim: true,
     match: [
       /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
       'Please add a valid email',
@@ -24,6 +26,12 @@ const UserSchema = new mongoose.Schema({
     type: String,
     enum: ['customer', 'vendor'],
     default: 'customer',
+  },
+  // Vendor access is denied until an administrator explicitly approves it.
+  vendorStatus: {
+    type: String,
+    enum: ['not_applicable', 'pending', 'approved', 'rejected'],
+    default: 'not_applicable',
   },
   phone: {
     type: String,
