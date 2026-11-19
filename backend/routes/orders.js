@@ -139,10 +139,22 @@ router.put('/:id/status', protect, vendorOnly, async (req, res) => {
       });
     }
 
-    order.status = status;
-    await order.save();
+    // Compare-and-set prevents two concurrent requests from applying a
+    // transition against the same stale status.
+    const updatedOrder = await Order.findOneAndUpdate(
+      { _id: order._id, status: order.status },
+      { $set: { status } },
+      { new: true, runValidators: true }
+    );
 
-    return res.json({ success: true, data: order });
+    if (!updatedOrder) {
+      return res.status(409).json({
+        success: false,
+        message: 'Order status changed concurrently. Refresh and try again.',
+      });
+    }
+
+    return res.json({ success: true, data: updatedOrder });
   } catch (error) {
     console.error('Order status update failed:', error.message);
     return res.status(500).json({ success: false, message: 'Unable to update order status' });
