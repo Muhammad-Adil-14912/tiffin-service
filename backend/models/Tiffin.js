@@ -5,15 +5,20 @@ const TiffinSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please add a tiffin title'],
     trim: true,
+    minlength: 3,
+    maxlength: 100,
   },
   description: {
     type: String,
     required: [true, 'Please add a description'],
+    trim: true,
+    minlength: 10,
+    maxlength: 2000,
   },
   price: {
-    daily: { type: Number, required: true },
-    weekly: { type: Number, required: true },
-    monthly: { type: Number, required: true },
+    daily: { type: Number, required: true, min: 0.01 },
+    weekly: { type: Number, required: true, min: 0.01 },
+    monthly: { type: Number, required: true, min: 0.01 },
   },
   category: {
     type: String,
@@ -32,6 +37,7 @@ const TiffinSchema = new mongoose.Schema({
   image: {
     type: String,
     default: '',
+    maxlength: 2048,
   },
   vendor: {
     type: mongoose.Schema.Types.ObjectId,
