@@ -6,6 +6,10 @@ const connectDB = require('./config/db');
 // Load environment variables
 dotenv.config();
 
+if (!process.env.JWT_SECRET) {
+  throw new Error('JWT_SECRET must be configured before starting the Tiffin Service API.');
+}
+
 // Connect to Database
 connectDB();
 
